@@ -66,6 +66,7 @@ endif
 install: all
 	cp $(RPD_MAIN)  $(PREFIX)/lib/
 	cp $(RPD_SCRIPT) $(PREFIX)/bin/
+	echo $(ROOT_DIR)../tools/rpd2tracing.py --format object ./trace.rpd ./trace.json >> $(PREFIX)/bin/$(RPD_SCRIPT)
 	ldconfig
 	$(PYTHON) setup.py install
 ifneq (,$(SMUDUMP))
