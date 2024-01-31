@@ -994,6 +994,7 @@ void rpdInit()
 
     // Pick some apis to ignore
     s_apiList = new ApiIdList();
+    /*
     s_apiList->setInvertMode(true);  // Omit the specified api
     s_apiList->add("hipGetDevice");
     s_apiList->add("hipSetDevice");
@@ -1007,7 +1008,11 @@ void rpdInit()
     s_apiList->add("hipPeekAtLastError");
     s_apiList->add("hipModuleGetFunction");
     s_apiList->add("hipEventCreateWithFlags");
+*/
 
+    s_apiList->setInvertMode(false); 
+    s_apiList->add("hipModuleLaunchKernel");
+    
     init_tracing();
 
     // Allow starting with recording disabled via ENV

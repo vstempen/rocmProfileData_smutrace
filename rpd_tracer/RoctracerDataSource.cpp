@@ -828,6 +828,7 @@ void RoctracerDataSource::hcc_activity_callback(const char* begin, const char* e
 void RoctracerDataSource::init() {
 
     // Pick some apis to ignore
+    /*
     m_apiList.setInvertMode(true);  // Omit the specified api
     m_apiList.add("hipGetDevice");
     m_apiList.add("hipSetDevice");
@@ -841,6 +842,10 @@ void RoctracerDataSource::init() {
     m_apiList.add("hipPeekAtLastError");
     m_apiList.add("hipModuleGetFunction");
     m_apiList.add("hipEventCreateWithFlags");
+    */
+
+    m_apiList.setInvertMode(false);  
+    m_apiList.add("hipModuleLaunchKernel");
 
     // roctracer properties
     //    Whatever the hell that means.  Magic encantation, thanks.
