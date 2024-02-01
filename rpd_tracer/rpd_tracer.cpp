@@ -1012,6 +1012,7 @@ void rpdInit()
 
     s_apiList->setInvertMode(false); 
     s_apiList->add("hipModuleLaunchKernel");
+    s_apiList->add("hipExtModuleLaunchKernel");
     
     init_tracing();
 

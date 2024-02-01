@@ -846,6 +846,7 @@ void RoctracerDataSource::init() {
 
     m_apiList.setInvertMode(false);  
     m_apiList.add("hipModuleLaunchKernel");
+    m_apiList.add("hipExtModuleLaunchKernel");
 
     // roctracer properties
     //    Whatever the hell that means.  Magic encantation, thanks.
