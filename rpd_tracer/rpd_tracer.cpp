@@ -994,7 +994,6 @@ void rpdInit()
 
     // Pick some apis to ignore
     s_apiList = new ApiIdList();
-    /*
     s_apiList->setInvertMode(true);  // Omit the specified api
     s_apiList->add("hipGetDevice");
     s_apiList->add("hipSetDevice");
@@ -1008,11 +1007,6 @@ void rpdInit()
     s_apiList->add("hipPeekAtLastError");
     s_apiList->add("hipModuleGetFunction");
     s_apiList->add("hipEventCreateWithFlags");
-*/
-
-    s_apiList->setInvertMode(false); 
-    s_apiList->add("hipModuleLaunchKernel");
-    s_apiList->add("hipExtModuleLaunchKernel");
     
     init_tracing();
 
