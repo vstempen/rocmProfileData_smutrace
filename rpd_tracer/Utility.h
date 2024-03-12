@@ -12,7 +12,6 @@
 
 
 typedef uint64_t timestamp_t;
-
 static inline uint32_t GetPid()
 {
     thread_local uint32_t pid = syscall(__NR_getpid);
