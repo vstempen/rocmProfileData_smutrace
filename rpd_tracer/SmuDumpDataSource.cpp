@@ -122,6 +122,11 @@ void SmuDumpDataSource::flush() {
 }
 
 
+void SmuDumpDataSource::delayUs(uint32_t timeUs)
+{
+    sqlite3_int64 startTime = clocktime_ns();
+    while(clocktime_ns() < startTime+timeUs*1000);
+}
 
 void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,const char* name, double value)
 {
@@ -131,7 +136,7 @@ void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,co
     mrow.deviceId = did;
     mrow.deviceType = type;
     mrow.monitorType = name;
-    mrow.start = SmuDumpDataSource::singleton().getTimeStamp() - 1000000;
+    mrow.start = SmuDumpDataSource::singleton().getTimeStamp();
     mrow.end = 0;
     mrow.value = fmt::format("{}", value);
     logger.monitorTable().insert(mrow);
@@ -148,12 +153,13 @@ void SmuDumpDataSource::smuwork()
 
         if (haveResource && m_loggingActive) {
             lock.unlock();
-            m_timestamp=clocktime_ns(); //single timestamp for all variables dumped at once, for easier post-processing.
+            m_timestamp=clocktime_ns() + m_smu_timeshift; //single timestamp for all variables dumped at once, for easier post-processing.
             f_smuDumpOnce();
             lock.lock();
         }
         
-        sqlite3_int64 sleepTime = startTime + m_smu_period  - clocktime_ns()/1000;
+        sqlite3_int64 endTime = clocktime_ns()/1000;
+        sqlite3_int64 sleepTime = startTime + m_reg_period - endTime;
         sleepTime = (sleepTime > 0) ? sleepTime : 0;
         if (haveResource == false)
             sleepTime += m_smu_period * 10;
@@ -167,6 +173,7 @@ void SmuDumpDataSource::smuwork()
         startTime = clocktime_ns()/1000;
     }
 }
+
 
 void SmuDumpDataSource::regwork()
 {
@@ -184,12 +191,13 @@ void SmuDumpDataSource::regwork()
             lock.lock();
         }
         
-        sqlite3_int64 sleepTime = startTime + m_reg_period - clocktime_ns()/1000;
+        sqlite3_int64 endTime = clocktime_ns()/1000;
+        sqlite3_int64 sleepTime = startTime + m_reg_period - endTime;
         sleepTime = (sleepTime > 0) ? sleepTime : 0;
         if (haveResource == false)
             sleepTime += m_reg_period * 10;
         lock.unlock();
-        usleep(sleepTime);
+        delayUs(sleepTime);
         lock.lock();
         if (haveResource == false) {
             haveResource = m_reg_resource->tryLock();
@@ -214,12 +222,13 @@ void SmuDumpDataSource::sviwork()
             lock.lock();
         }
         
-        sqlite3_int64 sleepTime = startTime + m_svi_period - clocktime_ns()/1000;
+        sqlite3_int64 endTime = clocktime_ns()/1000;
+        sqlite3_int64 sleepTime = startTime + m_reg_period - endTime;
         sleepTime = (sleepTime > 0) ? sleepTime : 0;
         if (haveResource == false)
             sleepTime += m_svi_period * 10;
         lock.unlock();
-        usleep(sleepTime);
+        delayUs(sleepTime);
         lock.lock();
         if (haveResource == false) {
             haveResource = m_svi_resource->tryLock();
