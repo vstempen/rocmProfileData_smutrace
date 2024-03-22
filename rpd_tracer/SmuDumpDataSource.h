@@ -34,6 +34,7 @@ public:
     static SmuDumpDataSource& singleton();
     timestamp_t getTimeStamp();
     bool isLoggingEnabled();
+    void delayUs(uint32_t timeUs);
 
 private:
     std::mutex m_mutex;
@@ -62,6 +63,7 @@ private:
     std::thread *m_svi_worker {nullptr};
     volatile bool m_done {false};
     sqlite3_int64 m_smu_period { 1000 };
+    sqlite3_int64 m_smu_timeshift { -1000000 };
     sqlite3_int64 m_reg_period { 10 };
     sqlite3_int64 m_svi_period { 1 };
 };
