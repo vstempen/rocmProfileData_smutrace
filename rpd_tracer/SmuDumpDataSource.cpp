@@ -12,6 +12,10 @@
 
 #include "Logger.h"
 
+#ifdef TRACY_ENABLE
+#include "tracy/Tracy.hpp"
+#endif
+
 static SmuDumpDataSource *g_singleton = nullptr;
 
 // Create a factory for the Logger to locate and use
