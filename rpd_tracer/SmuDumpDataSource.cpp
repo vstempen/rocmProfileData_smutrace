@@ -31,7 +31,8 @@ SmuDumpDataSource& SmuDumpDataSource::singleton()
 
 timestamp_t SmuDumpDataSource::getTimeStamp()
 {
-    return m_timestamp;
+    //return m_timestamp;
+    return clocktime_ns();
 }
 
 bool SmuDumpDataSource::isLoggingEnabled()
