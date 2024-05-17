@@ -293,6 +293,7 @@ void Logger::finalize()
 
         const timestamp_t end_time = clocktime_ns();
         fprintf(stderr, "rpd_tracer: finalized in %f ms\n", 1.0 * (end_time - begin_time) / 1000000);
+        usleep(1000);
     }
 }
 

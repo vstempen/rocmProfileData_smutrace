@@ -94,7 +94,7 @@ void MonitorTable::insert(const MonitorTable::row &row)
     prev = row.start;
 #endif
 
-    if (old.value != row.value) {  // value changed, actually insert a row
+    if (old.value != row.value || row.storeAllRecords) {  // value changed, actually insert a row
         old.end = row.start;
         //fprintf(stderr, "+++++ %lld\n", row.start);
         d->insertInternal(old);
