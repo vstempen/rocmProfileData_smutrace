@@ -267,6 +267,7 @@ public:
         sqlite3_int64 start;
         sqlite3_int64 end;
         std::string value;
+        bool storeAllRecords;
     };
 
     void insert(const row&);

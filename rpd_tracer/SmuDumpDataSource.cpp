@@ -52,7 +52,7 @@ void SmuDumpDataSource::init()
         f_smuGetTraceRate = (SmuGetTraceRate) dlsym(dl, "getSmuVariablesCaptureRate");
         f_regGetTraceRate = (RegGetTraceRate) dlsym(dl, "getRegisterExpressionCaptureRate");
         m_loggingEnabled = (f_smuDumpInit && f_smuDumpEnd && f_smuDumpOnce &&
-                            f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  &&
+                            f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  && 
                             f_smuDumpInit(addSMUValueToSqliteDb));
     }
 
@@ -133,7 +133,7 @@ void SmuDumpDataSource::delayUs(uint32_t timeUs)
     while(clocktime_ns() < startTime+timeUs*1000);
 }
 
-void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,const char* name, double value)
+void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,const char* name, double value, uint64_t flags)
 {
     if (SmuDumpDataSource::singleton().getTimeStamp() == 0) return;
     Logger &logger = Logger::singleton();
@@ -144,6 +144,7 @@ void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,co
     mrow.start = SmuDumpDataSource::singleton().getTimeStamp();
     mrow.end = 0;
     mrow.value = fmt::format("{}", value);
+    mrow.storeAllRecords = flags & SMUTRACE_FLAG_STOREALLRECORDS;
     logger.monitorTable().insert(mrow);
 }
 

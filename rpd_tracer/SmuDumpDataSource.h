@@ -12,7 +12,9 @@
 #include <mutex>
 #include <condition_variable>
 
-typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double);
+#define SMUTRACE_FLAG_STOREALLRECORDS 1
+
+typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t);
 typedef bool (*SmuDumpInitFunc) (SmuDumpCallback callback);
 typedef void (*SmuDumpEndFunc) (void);
 typedef void (*SmuDumpOnceFunc) (void);
@@ -20,7 +22,6 @@ typedef void (*RegDumpOnceFunc) (void);
 typedef void (*SviDumpOnceFunc) (void);
 typedef uint32_t (*RegGetTraceRate) (void);
 typedef uint32_t (*SmuGetTraceRate) (void);
-
 
 class SmuDumpDataSource : public DataSource
 {
@@ -52,7 +53,7 @@ private:
 
     bool m_loggingActive {false};
     bool m_loggingEnabled {false};
-    static void addSMUValueToSqliteDb(uint64_t, const char* type ,const char* name, double value);
+    static void addSMUValueToSqliteDb(uint64_t, const char* type ,const char* name, double value, uint64_t flags);
 
 
     void smuwork(); 
