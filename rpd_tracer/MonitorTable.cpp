@@ -79,6 +79,7 @@ MonitorTable::~MonitorTable()
 
 void MonitorTable::insert(const MonitorTable::row &row)
 {
+#if 0
     auto it = d->values.find(row);
     if (it == d->values.end()) {
         d->values.insert(std::pair<MonitorTable::row, bool>(row, true));
@@ -98,6 +99,11 @@ void MonitorTable::insert(const MonitorTable::row &row)
         d->insertInternal(old);
         old = row;
     }
+
+#endif
+MonitorTable::row &old = const_cast<MonitorTable::row&>(row);
+old.end = row.start;
+d->insertInternal(old);
 }
 
 void MonitorTablePrivate::insertInternal(MonitorTable::row &row)
