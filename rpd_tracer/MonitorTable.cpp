@@ -81,31 +81,31 @@ MonitorTable::~MonitorTable()
 
 void MonitorTable::insert(const MonitorTable::row &row)
 {
-#if 0
-    auto it = d->values.find(row);
-    if (it == d->values.end()) {
-        d->values.insert(std::pair<MonitorTable::row, bool>(row, true));
-        it = d->values.find(row);
+    if (row.end == 0)
+    {
+        auto it = d->values.find(row);
+        if (it == d->values.end()) {
+            d->values.insert(std::pair<MonitorTable::row, bool>(row, true));
+            it = d->values.find(row);
+        }
+        MonitorTable::row &old = const_cast<MonitorTable::row&>((*it).first);  // Oh yes
+
+    #if 0
+        static sqlite3_int64 prev = clocktime_ns();
+        fprintf(stderr, "      %lld   delta %lld\n", row.start, row.start - prev);
+        prev = row.start;
+    #endif
+
+        if (old.value != row.value) {  // value changed, actually insert a row
+            old.end = row.start;
+            //fprintf(stderr, "+++++ %lld\n", row.start);
+            d->insertInternal(old);
+            old = row;
+        }
+    } else
+    {
+        d->insertInternal(const_cast<MonitorTable::row&>(row));
     }
-    MonitorTable::row &old = const_cast<MonitorTable::row&>((*it).first);  // Oh yes
-
-#if 0
-    static sqlite3_int64 prev = clocktime_ns();
-    fprintf(stderr, "      %lld   delta %lld\n", row.start, row.start - prev);
-    prev = row.start;
-#endif
-
-    if (old.value != row.value || row.storeAllRecords) {  // value changed, actually insert a row
-        old.end = row.start;
-        //fprintf(stderr, "+++++ %lld\n", row.start);
-        d->insertInternal(old);
-        old = row;
-    }
-
-#endif
-MonitorTable::row &old = const_cast<MonitorTable::row&>(row);
-old.end = row.start;
-d->insertInternal(old);
 }
 
 void MonitorTablePrivate::insertInternal(MonitorTable::row &row)

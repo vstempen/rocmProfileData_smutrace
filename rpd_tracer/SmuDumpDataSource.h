@@ -12,9 +12,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#define SMUTRACE_FLAG_STOREALLRECORDS 1
-
-typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t);
+typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t, uint64_t);
 typedef bool (*SmuDumpInitFunc) (SmuDumpCallback callback);
 typedef void (*SmuDumpEndFunc) (void);
 typedef void (*SmuDumpOnceFunc) (void);
@@ -53,7 +51,7 @@ private:
 
     bool m_loggingActive {false};
     bool m_loggingEnabled {false};
-    static void addSMUValueToSqliteDb(uint64_t, const char* type ,const char* name, double value, uint64_t flags);
+    static void addSMUValueToSqliteDb(uint64_t, const char* type ,const char* name, double value, uint64_t flags, uint64_t duration);
 
 
     void smuwork(); 
