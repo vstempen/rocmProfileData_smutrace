@@ -133,7 +133,7 @@ void SmuDumpDataSource::delayUs(uint32_t timeUs)
     while(clocktime_ns() < startTime+timeUs*1000);
 }
 
-void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,const char* name, double value, uint64_t flags)
+void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,const char* name, double value, uint64_t flags, uint64_t duration)
 {
     if (SmuDumpDataSource::singleton().getTimeStamp() == 0) return;
     Logger &logger = Logger::singleton();
@@ -141,10 +141,10 @@ void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,co
     mrow.deviceId = did;
     mrow.deviceType = type;
     mrow.monitorType = name;
-    mrow.start = SmuDumpDataSource::singleton().getTimeStamp();
-    mrow.end = 0;
+    uint64_t timestamp = SmuDumpDataSource::singleton().getTimeStamp();
+    mrow.start = timestamp-duration;
+    mrow.end = timestamp;
     mrow.value = fmt::format("{}", value);
-    mrow.storeAllRecords = flags & SMUTRACE_FLAG_STOREALLRECORDS;
     logger.monitorTable().insert(mrow);
 }
 
