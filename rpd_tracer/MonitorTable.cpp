@@ -36,8 +36,8 @@ class MonitorTablePrivate
 {
 public:
     MonitorTablePrivate(MonitorTable *cls) : p(cls) {} 
-    static const int BUFFERSIZE = 4096 * 8;
-    static const int BATCHSIZE = 4096;           // rows per transaction
+    static const int BUFFERSIZE = 8192 * 8;
+    static const int BATCHSIZE = 8192;           // rows per transaction
     std::array<MonitorTable::row, BUFFERSIZE> rows; // Circular buffer
 
     sqlite3_stmt *monitorInsert;
