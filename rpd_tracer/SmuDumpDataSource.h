@@ -12,7 +12,7 @@
 #include <mutex>
 #include <condition_variable>
 
-typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t, uint64_t);
+typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t, uint64_t, uint64_t);
 typedef bool (*SmuDumpInitFunc) (SmuDumpCallback callback);
 typedef void (*SmuDumpEndFunc) (void);
 typedef void (*SmuDumpOnceFunc) (void);
@@ -51,7 +51,7 @@ private:
 
     bool m_loggingActive {false};
     bool m_loggingEnabled {false};
-    static void addSMUValueToSqliteDb(uint64_t, const char* type ,const char* name, double value, uint64_t flags, uint64_t duration);
+    static void addSMUValueToSqliteDb(uint64_t, const char* type ,const char* name, double value, uint64_t flags, uint64_t starttime, uint64_t endtime);
 
 
     void smuwork(); 
