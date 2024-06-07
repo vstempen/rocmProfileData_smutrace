@@ -206,7 +206,7 @@ void Logger::finalize()
     std::lock_guard<std::mutex> guard(finalizeMutex);
     if (doFinalize == true) {
         doFinalize = false;
-        usleep(1000);
+        //
         for (auto it = m_sources.begin(); it != m_sources.end(); ++it)
             (*it)->stopTracing();
 
@@ -224,8 +224,7 @@ void Logger::finalize()
         m_stringTable->finalize();	// String table last
 
         const timestamp_t end_time = clocktime_ns();
-        fprintf(stderr, "rpd_tracer: finalized in %f ms\n", 1.0 * (end_time - begin_time) / 1000000);
-        usleep(1000);
+        fprintf(stderr, "rpd_tracer: finalized in %f ms\n", 1.0 * (end_time - begin_time) / 1000000);;
     }
 }
 
