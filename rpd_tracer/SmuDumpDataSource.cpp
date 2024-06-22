@@ -46,12 +46,13 @@ void SmuDumpDataSource::init()
     if (dl) {
         f_smuDumpInit = (SmuDumpInitFunc) dlsym(dl, "smuDumpInit");
         f_smuDumpEnd = (SmuDumpEndFunc) dlsym(dl, "smuDumpEnd");
+        f_smuDumpStop = (SmuDumpStopFunc) dlsym(dl, "smuDumpStop");
         f_smuDumpOnce = (SmuDumpOnceFunc) dlsym(dl, "smuDumpOnce");
         f_regDumpOnce = (RegDumpOnceFunc) dlsym(dl, "regDumpOnce");
         f_sviDumpOnce = (SviDumpOnceFunc) dlsym(dl, "sviDumpOnce");
         f_smuGetTraceRate = (SmuGetTraceRate) dlsym(dl, "getSmuVariablesCaptureRate");
         f_regGetTraceRate = (RegGetTraceRate) dlsym(dl, "getRegisterExpressionCaptureRate");
-        m_loggingEnabled = (f_smuDumpInit && f_smuDumpEnd && f_smuDumpOnce &&
+        m_loggingEnabled = (f_smuDumpInit && f_smuDumpStop && f_smuDumpEnd &&f_smuDumpOnce &&
                             f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  && 
                             f_smuDumpInit(addSMUValueToSqliteDb));
     }
@@ -107,6 +108,7 @@ void SmuDumpDataSource::stopTracing()
 {
     if (m_loggingEnabled)
     {
+        f_smuDumpStop();
         std::unique_lock<std::mutex> lock(m_mutex);
         m_timestamp = 0;
         m_loggingActive = false;

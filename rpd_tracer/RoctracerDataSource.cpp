@@ -691,7 +691,7 @@ void RoctracerDataSource::api_callback(
                     break;
                 case HIP_API_ID_hipStreamBeginCapture:
                     row.args_id = logger.stringTable().getOrCreate(
-                        fmt::format("stream = {} | mode = {}", (void*)data->args.hipStreamBeginCapture.stream, data->args.hipStreamBeginCapture.mode)
+                        fmt::format("stream = {} | mode = {}", (void*)data->args.hipStreamBeginCapture.stream, (uint32_t)data->args.hipStreamBeginCapture.mode)
                     );
                     break;
                 case HIP_API_ID_hipStreamEndCapture:
