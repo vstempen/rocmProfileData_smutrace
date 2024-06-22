@@ -15,6 +15,7 @@
 typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t, uint64_t, uint64_t);
 typedef bool (*SmuDumpInitFunc) (SmuDumpCallback callback);
 typedef void (*SmuDumpEndFunc) (void);
+typedef void (*SmuDumpStopFunc) (void);
 typedef void (*SmuDumpOnceFunc) (void);
 typedef void (*RegDumpOnceFunc) (void);
 typedef void (*SviDumpOnceFunc) (void);
@@ -39,6 +40,7 @@ private:
     std::mutex m_mutex;
     SmuDumpInitFunc f_smuDumpInit;
     SmuDumpEndFunc f_smuDumpEnd;
+    SmuDumpStopFunc f_smuDumpStop;
     SmuDumpOnceFunc f_smuDumpOnce;
     RegDumpOnceFunc f_regDumpOnce;
     SviDumpOnceFunc f_sviDumpOnce;
