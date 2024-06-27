@@ -44,6 +44,7 @@ class rpdTracerControl:
     @classmethod
     def loadLibrary(cls):
         if cls.__rpd == None:
+            print("load rpd_tracer library")
             os.environ["RPDT_AUTOSTART"] = "0"
             cls.__rpd = CDLL(find_library("rpd_tracer"))
 
