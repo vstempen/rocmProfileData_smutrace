@@ -99,8 +99,10 @@ if args.start:
         start_time = ( (max_time - min_time) * ( int( args.start.replace("%","") )/100 ) + min_time )
     else:
         start_time = int(args.start)
-    rangeStringApi = "where rocpd_api.start >= %s"%(start_time)
-    rangeStringOp = "where rocpd_op.start >= %s"%(start_time)
+
+rangeStringApi = "where rocpd_api.start >= %s"%(start_time)
+rangeStringOp = "where rocpd_op.start >= %s"%(start_time)
+
 if args.end:
     if "%" in args.end:
         end_time = ( (max_time - min_time) * ( int( args.end.replace("%","") )/100 ) + min_time )
