@@ -111,7 +111,7 @@ if args.end:
     rangeStringOp = rangeStringOp + " and rocpd_op.start <= %s"%(end_time) if args.start != None else "where rocpd_op.start <= %s"%(end_time)
 
 print("\nFilter: %s"%(rangeStringApi))
-print(f"Output duration: {(end_time-start_time)/1000000} seconds")
+print(f"Output duration: {(end_time-start_time)/1000000000} seconds")
 
 # Output Ops
 '''
@@ -213,10 +213,10 @@ for gpuId in gpuIdsPresent:
 # Create SMI counters
 try:
     for row in connection.execute("select deviceId, monitorType, start, value from rocpd_monitor"):
-        outfile.write(',{"pid":"%s","name":"%s","ph":"C","ts":%s,"args":{"%s":%s}}\n'%(row[0], "", str(float(row[2])/1000), row[1], row[3]))
+        outfile.write(',{"pid":"%s","name":"%s","ph":"C","ts":"%s","args":{"%s":%s}}\n'%(row[0], row[1], str(float(row[2])/1000), "", row[3]))
     # Output the endpoints of the last range
     for row in connection.execute("select distinct deviceId, monitorType, max(end), value from rocpd_monitor group by deviceId, monitorType"):
-        outfile.write(',{"pid":"%s","name":"%s","ph":"C","ts":%s,"args":{"%s":%s}}\n'%(row[0], "", str(float(row[2])/1000), row[1], row[3]))
+        outfile.write(',{"pid":"%s","name":"%s","ph":"C","ts":"%s","args":{"%s":%s}}\n'%(row[0], row[1], str(float(row[2])/1000), "", row[3]))
 except:
     print("Did not find SMI data")
 
