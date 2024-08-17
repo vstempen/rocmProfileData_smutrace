@@ -55,7 +55,7 @@ void SmuDumpDataSource::init()
         f_regGetTraceRate = (RegGetTraceRate) dlsym(dl, "getRegisterExpressionCaptureRate");
         f_getTraceFlags = (GetTraceFlags) dlsym(dl, "getTraceFlags");
         m_loggingEnabled = (f_smuDumpInit && f_smuDumpStop && f_smuDumpEnd &&f_smuDumpOnce &&
-                            f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  && f_regGetTraceFlags &&
+                            f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  && f_getTraceFlags &&
                             f_smuDumpInit(addSMUValueToSqliteDb));
     }
 
@@ -242,7 +242,6 @@ void SmuDumpDataSource::sviwork()
     
     while (m_done == false) {
 
-        if (haveResource && m_loggingActive && !loggingGated())) {
             lock.unlock();
             m_timestamp=clocktime_ns();
             f_sviDumpOnce();
