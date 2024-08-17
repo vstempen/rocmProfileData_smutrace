@@ -85,6 +85,12 @@ ifneq (,$(SMUDUMP))
 	sudo make config -C $(ROOT_DIR)../smutrace
 endif
 
+.PHONY: rpd2tracy
+rpd2tracy:
+ifneq (,$(SMUDUMP))
+	sudo make rpd2tracy -C $(ROOT_DIR)../smutrace
+endif
+
 .PHONY: uninstall
 uninstall:
 	rm $(PREFIX)/lib/$(RPD_MAIN)

@@ -3,6 +3,7 @@
  **************************************************************************/
 #include "SmuDumpDataSource.h"
 
+#include <cstdint>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -52,8 +53,9 @@ void SmuDumpDataSource::init()
         f_sviDumpOnce = (SviDumpOnceFunc) dlsym(dl, "sviDumpOnce");
         f_smuGetTraceRate = (SmuGetTraceRate) dlsym(dl, "getSmuVariablesCaptureRate");
         f_regGetTraceRate = (RegGetTraceRate) dlsym(dl, "getRegisterExpressionCaptureRate");
+        f_getTraceFlags = (GetTraceFlags) dlsym(dl, "getTraceFlags");
         m_loggingEnabled = (f_smuDumpInit && f_smuDumpStop && f_smuDumpEnd &&f_smuDumpOnce &&
-                            f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  && 
+                            f_smuGetTraceRate && f_regGetTraceRate && f_regDumpOnce  && f_sviDumpOnce  && f_regGetTraceFlags &&
                             f_smuDumpInit(addSMUValueToSqliteDb));
     }
 
@@ -64,6 +66,7 @@ void SmuDumpDataSource::init()
 
     if (m_loggingEnabled)
     {
+        m_trace_flags = f_getTraceFlags();
         m_smu_period = f_smuGetTraceRate();
         m_reg_period = f_regGetTraceRate();
         m_smu_resource = new DbResource(Logger::singleton().filename(), std::string("smudump_logger_smu_active"));
@@ -135,6 +138,23 @@ void SmuDumpDataSource::delayUs(uint32_t timeUs)
     while(clocktime_ns() < startTime+timeUs*1000);
 }
 
+bool SmuDumpDataSource::loggingGated()
+{
+    Logger &logger = Logger::singleton();
+    uint64_t time = clocktime_ns();
+    if (m_trace_flags & START_CAPTURE_AFTER_HCC_ACTIVITY)
+    {
+        uint64_t hccTime = logger.getHccActivityTime();
+        if (hccTime > 0 && (time - hccTime) < 1000000) return true;
+    }
+    if (m_trace_flags & START_CAPTURE_AFTER_API_ACTIVITY)
+    {
+        uint64_t apiTime = logger.getApiActivityTime();
+        if (apiTime > 0 && (time - apiTime) < 1000000) return true;
+    }
+    return false;
+}
+
 void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,const char* name, double value, uint64_t flags, uint64_t starttime, uint64_t endtime)
 {
     Logger &logger = Logger::singleton();
@@ -150,7 +170,7 @@ void SmuDumpDataSource::addSMUValueToSqliteDb(uint64_t did, const char* type ,co
 }
 
 void SmuDumpDataSource::smuwork()
-{
+{   
     std::unique_lock<std::mutex> lock(m_mutex);
     sqlite3_int64 startTime = clocktime_ns()/1000;
 
@@ -158,7 +178,7 @@ void SmuDumpDataSource::smuwork()
     
     while (m_done == false) {
 
-        if (haveResource && m_loggingActive) {
+        if (haveResource && m_loggingActive && !loggingGated()) {
             lock.unlock();
             m_timestamp=clocktime_ns() + m_smu_timeshift; //single timestamp for all variables dumped at once, for easier post-processing.
             f_smuDumpOnce();
@@ -191,7 +211,7 @@ void SmuDumpDataSource::regwork()
     
     while (m_done == false) {
 
-        if (haveResource && m_loggingActive) {
+        if (haveResource && m_loggingActive && !loggingGated()) {
             lock.unlock();
             m_timestamp=clocktime_ns();
             f_regDumpOnce();
@@ -222,7 +242,7 @@ void SmuDumpDataSource::sviwork()
     
     while (m_done == false) {
 
-        if (haveResource && m_loggingActive) {
+        if (haveResource && m_loggingActive && !loggingGated())) {
             lock.unlock();
             m_timestamp=clocktime_ns();
             f_sviDumpOnce();

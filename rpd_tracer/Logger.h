@@ -66,6 +66,10 @@ public:
     static void rpdFinalize() __attribute__((destructor));
 
     const std::string filename() { return m_filename; };
+    const bool getApiActivityTime() {return m_apiActivityTime;};
+    const bool getHccActivityTime() {return m_hccActivityTime;};
+    void registerApiActivityStatus(uint64_t time) {m_apiActivityTime=time;};
+    void registerHccActivityStatus(uint64_t time) {m_hccActivityTime=time;};
 
 private:
     int m_activeCount {0};
@@ -91,4 +95,7 @@ private:
     int m_period{1};
     std::thread *m_worker {nullptr};
     void autoflushWorker();
+
+    unsigned long long m_apiActivityTime {false};
+    unsigned long long m_hccActivityTime {false};
 };

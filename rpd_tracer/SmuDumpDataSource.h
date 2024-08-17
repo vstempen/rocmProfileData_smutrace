@@ -7,10 +7,16 @@
 #include "DbResource.h"
 #include "Utility.h"
 
+#include <cstdint>
 #include <sqlite3.h>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+
+enum TraceFlags{
+    START_CAPTURE_AFTER_HCC_ACTIVITY = 1,
+    START_CAPTURE_AFTER_API_ACTIVITY = 2,
+};
 
 typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t, uint64_t, uint64_t);
 typedef bool (*SmuDumpInitFunc) (SmuDumpCallback callback);
@@ -20,6 +26,7 @@ typedef void (*SmuDumpOnceFunc) (void);
 typedef void (*RegDumpOnceFunc) (void);
 typedef void (*SviDumpOnceFunc) (void);
 typedef uint32_t (*RegGetTraceRate) (void);
+typedef uint32_t (*GetTraceFlags) (void);
 typedef uint32_t (*SmuGetTraceRate) (void);
 
 class SmuDumpDataSource : public DataSource
@@ -35,6 +42,7 @@ public:
     timestamp_t getTimeStamp();
     bool isLoggingEnabled();
     void delayUs(uint32_t timeUs);
+    bool loggingGated();
 
 private:
     std::mutex m_mutex;
@@ -46,6 +54,7 @@ private:
     SviDumpOnceFunc f_sviDumpOnce;
     RegGetTraceRate f_regGetTraceRate;
     SmuGetTraceRate f_smuGetTraceRate;
+    GetTraceFlags f_getTraceFlags;
     DbResource *m_smu_resource {nullptr};
     DbResource *m_reg_resource {nullptr};
     DbResource *m_svi_resource {nullptr};
@@ -67,5 +76,6 @@ private:
     sqlite3_int64 m_smu_timeshift { -1000000 };
     sqlite3_int64 m_reg_period { 10 };
     sqlite3_int64 m_svi_period { 1 };
+    uint32_t m_trace_flags {0};
 };
 
