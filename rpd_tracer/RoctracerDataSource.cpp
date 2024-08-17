@@ -833,7 +833,7 @@ void RoctracerDataSource::hcc_activity_callback(const char* begin, const char* e
     const timestamp_t toffset = (t0 >> 1) + (t00 >> 1) - t1;
 
     Logger &logger = Logger::singleton();
-    logger.registerHccActivity(t00);
+    logger.registerApiActivity(t00);
 
     while (record < end_record) {
         const char *name = roctracer_op_string(record->domain, record->op, record->kind);

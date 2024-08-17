@@ -14,8 +14,7 @@
 #include <condition_variable>
 
 enum TraceFlags{
-    START_CAPTURE_AFTER_HCC_ACTIVITY = 1,
-    START_CAPTURE_AFTER_API_ACTIVITY = 2,
+    START_CAPTURE_AFTER_API_ACTIVITY = 1,
 };
 
 typedef void (*SmuDumpCallback)(uint64_t, const char*, const char*, double, uint64_t, uint64_t, uint64_t);

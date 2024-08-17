@@ -141,16 +141,11 @@ void SmuDumpDataSource::delayUs(uint32_t timeUs)
 bool SmuDumpDataSource::loggingGated()
 {
     Logger &logger = Logger::singleton();
-    uint64_t time = clocktime_ns();
-    if (m_trace_flags & START_CAPTURE_AFTER_HCC_ACTIVITY)
-    {
-        uint64_t hccTime = logger.getHccActivityTime();
-        if (hccTime > 0 && (time - hccTime) < 1000000) return true;
-    }
     if (m_trace_flags & START_CAPTURE_AFTER_API_ACTIVITY)
     {
+        uint64_t time = clocktime_ns();
         uint64_t apiTime = logger.getApiActivityTime();
-        if (apiTime > 0 && (time - apiTime) < 1000000) return true;
+        if (apiTime == 0 || (time - apiTime) > 1000000000) return true;
     }
     return false;
 }
@@ -242,6 +237,7 @@ void SmuDumpDataSource::sviwork()
     
     while (m_done == false) {
 
+        if (haveResource && m_loggingActive && !loggingGated()) {
             lock.unlock();
             m_timestamp=clocktime_ns();
             f_sviDumpOnce();
