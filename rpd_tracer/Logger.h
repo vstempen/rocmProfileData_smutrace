@@ -66,8 +66,7 @@ public:
     static void rpdFinalize() __attribute__((destructor));
 
     const std::string filename() { return m_filename; };
-    const bool getApiActivityTime() {return m_apiActivityTime;};
-    const bool getHccActivityTime() {return m_hccActivityTime;};
+    const uint64_t getApiActivityTime() {return m_apiActivityTime;};
     void registerApiActivity(uint64_t time) {m_apiActivityTime=time;};
 
 private:
