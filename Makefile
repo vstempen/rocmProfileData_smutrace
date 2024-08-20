@@ -27,3 +27,7 @@ rocpd:
 .PHONY: config
 config:
 	$(MAKE) config -C rpd_tracer
+
+.PHONY: rpd2tracy
+rpd2tracy:
+	$(MAKE) rpd2tracy -C rpd_tracer

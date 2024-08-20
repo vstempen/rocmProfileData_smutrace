@@ -96,21 +96,23 @@ end_time = max_time
 
 if args.start:
     if "%" in args.start:
-        start_time = ( (max_time - min_time) * ( int( args.start.replace("%","") )/100 ) + min_time )
+        start_time = int( (max_time - min_time) * ( int( args.start.replace("%","") )/100 ) + min_time )
     else:
         start_time = int(args.start)
 
 rangeStringApi = "where rocpd_api.start >= %s"%(start_time)
 rangeStringOp = "where rocpd_op.start >= %s"%(start_time)
+rangeStringMonitor = "where rocpd_monitor.start >= %s"%(start_time)
 
 if args.end:
     if "%" in args.end:
-        end_time = ( (max_time - min_time) * ( int( args.end.replace("%","") )/100 ) + min_time )
+        end_time = int( (max_time - min_time) * ( int( args.end.replace("%","") )/100 ) + min_time )
     else:
         end_time = int(args.end)
 
     rangeStringApi = rangeStringApi + " and rocpd_api.start <= %s"%(end_time) if args.start != None else "where rocpd_api.start <= %s"%(end_time)
     rangeStringOp = rangeStringOp + " and rocpd_op.start <= %s"%(end_time) if args.start != None else "where rocpd_op.start <= %s"%(end_time)
+    rangeStringMonitor = rangeStringMonitor + " and rocpd_monitor.start <= %s"%(end_time) if args.start != None else "where rocpd_monitor.start <= %s"%(end_time)
 
 print("\nFilter: %s"%(rangeStringApi))
 print(f"Output duration: {(end_time-start_time)/1000000000} seconds")
@@ -214,10 +216,10 @@ for gpuId in gpuIdsPresent:
 
 # Create SMI counters
 try:
-    for row in connection.execute("select deviceId, monitorType, start, value from rocpd_monitor"):
+    for row in connection.execute("select deviceId, monitorType, start, value from rocpd_monitor %s"%(rangeStringMonitor)):
         outfile.write(',{"pid":"%s","name":"%s","ph":"C","ts":"%s","args":{"%s":%s}}\n'%(row[0], row[1], str(float(row[2])/1000), "", row[3]))
     # Output the endpoints of the last range
-    for row in connection.execute("select distinct deviceId, monitorType, max(end), value from rocpd_monitor group by deviceId, monitorType"):
+    for row in connection.execute("select distinct deviceId, monitorType, max(end), value from rocpd_monitor %s group by deviceId, monitorType"%(rangeStringMonitor)):
         outfile.write(',{"pid":"%s","name":"%s","ph":"C","ts":"%s","args":{"%s":%s}}\n'%(row[0], row[1], str(float(row[2])/1000), "", row[3]))
 except:
     print("Did not find SMI data")
