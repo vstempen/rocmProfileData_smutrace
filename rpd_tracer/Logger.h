@@ -23,6 +23,7 @@
 
 #include <cstdint>
 #include <deque>
+#include <atomic>
 
 #include "Table.h"
 #include "DataSource.h"
@@ -82,6 +83,6 @@ private:
 
     std::string m_filename;
     bool m_writeOverheadRecords {true};
-    volatile uint64_t m_apiActivityTime {0};
-    volatile uint64_t m_hccActivityTime {0};
+    std::atomic<uint64_t> m_apiActivityTime {0};
+
 };
