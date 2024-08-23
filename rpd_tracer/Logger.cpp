@@ -79,9 +79,10 @@ void createOverheadRecord(uint64_t start, uint64_t end, const std::string &name,
     Logger::singleton().createOverheadRecord(start, end, name, args);
 }
 
-
+//std::mutex g_i_mutex;
 Logger& Logger::singleton()
 {
+    //const std::lock_guard<std::mutex> lock(g_i_mutex);
     static Logger logger;
     return logger;
 }

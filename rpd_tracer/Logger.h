@@ -25,6 +25,7 @@
 #include <mutex>
 #include <deque>
 #include <thread>
+#include <atomic>
 
 #include "Table.h"
 #include "DataSource.h"
@@ -94,6 +95,6 @@ private:
     std::thread *m_worker {nullptr};
     void autoflushWorker();
 
-    unsigned long long m_apiActivityTime {false};
-    unsigned long long m_hccActivityTime {false};
+    std::atomic<unsigned long long> m_apiActivityTime {0};
+
 };

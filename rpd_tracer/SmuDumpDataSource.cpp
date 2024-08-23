@@ -140,10 +140,10 @@ void SmuDumpDataSource::delayUs(uint32_t timeUs)
 
 bool SmuDumpDataSource::loggingGated()
 {
-    Logger &logger = Logger::singleton();
     if (m_trace_flags & START_CAPTURE_AFTER_API_ACTIVITY)
     {
         uint64_t time = clocktime_ns();
+        Logger &logger = Logger::singleton();
         uint64_t apiTime = logger.getApiActivityTime();
         if (apiTime == 0 || (time - apiTime) > 1000000000) return true;
     }
