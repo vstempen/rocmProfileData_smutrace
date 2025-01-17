@@ -28,15 +28,22 @@ rpd:
 rocpd:
 	$(MAKE) -C rocpd_python
 
+<<<<<<< HEAD
 
 .PHONY: remote
 remote:
 	$(MAKE) -C remote 
 
+=======
+>>>>>>> 984624296f66b26a0838e5013cfd603f4a1388dd
 .PHONY: config
 config:
 	$(MAKE) config -C rpd_tracer
 
 .PHONY: rpd2tracy
 rpd2tracy:
+<<<<<<< HEAD
 	$(MAKE) rpd2tracy -C rpd_tracer
+=======
+	$(MAKE) rpd2tracy -C rpd_tracer
+>>>>>>> 984624296f66b26a0838e5013cfd603f4a1388dd
