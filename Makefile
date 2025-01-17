@@ -38,5 +38,4 @@ config:
 
 .PHONY: rpd2tracy
 rpd2tracy:
-<<<<<<< HEAD
 	$(MAKE) rpd2tracy -C rpd_tracer
