@@ -36,8 +36,8 @@ class MonitorTablePrivate
 {
 public:
     MonitorTablePrivate(MonitorTable *cls) : p(cls) {} 
-    static const int BUFFERSIZE = 8192 * 8;
-    static const int BATCHSIZE = 8192;           // rows per transaction
+    static const int BUFFERSIZE = 4096 * 8;
+    static const int BATCHSIZE = 4096;           // rows per transaction
     std::array<MonitorTable::row, BUFFERSIZE> rows; // Circular buffer
 
     sqlite3_stmt *monitorInsert;
@@ -81,6 +81,12 @@ MonitorTable::~MonitorTable()
 
 void MonitorTable::insert(const MonitorTable::row &row)
 {
+    // RocmSmiDataSource inserts rows with row.end == 0
+    // SmuDumpDataSource inserts rows with row.end != 0
+    // For SmuDumpDataSource the search for same value is performend in a more efficient way
+    // in SMUTrace module before sending the data to rocPD,
+    // so skipping this step for SmuTrace data.
+    // TODO: maybe better add a flag specifing source of the data insted of testing row.end
     if (row.end == 0)
     {
         auto it = d->values.find(row);

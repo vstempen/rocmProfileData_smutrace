@@ -118,7 +118,8 @@ void RoctracerDataSource::api_callback(
 
         if (data->phase == ACTIVITY_API_PHASE_ENTER) {
             timestamp = clocktime_ns();
-            logger.registerApiActivity(timestamp);
+            //mark beginning of API activity to start capturing metrics
+            logger.registerApiActivity(timestamp); 
         }
         else { // data->phase == ACTIVITY_API_PHASE_EXIT
             char buff[4096];
@@ -860,6 +861,7 @@ void RoctracerDataSource::hcc_activity_callback(const char* begin, const char* e
     const timestamp_t toffset = (t0 >> 1) + (t00 >> 1) - t1;
 
     Logger &logger = Logger::singleton();
+    //mark beginning of GPU activity to start capturing metrics
     logger.registerApiActivity(t00);
 
     while (record < end_record) {
