@@ -48,7 +48,11 @@ class rpdTracerControl:
     def loadLibrary(cls):
         if cls.__rpd == None and cls.__active == True:
             os.environ["RPDT_AUTOSTART"] = "0"
-            cls.__rpd = CDLL(find_library("rpd_tracer"))
+            libpath = find_library("rpd_tracer")
+            if libpath == None:
+                print("ctypes.util.find_library cannot find rpd_tracer. Using /usr/local/lib/librpd_tracer.so")
+                libpath = "/usr/local/lib/librpd_tracer.so"
+            cls.__rpd = CDLL(libpath)
 
     @classmethod
     def initializeFile(cls):
