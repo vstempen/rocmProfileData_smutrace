@@ -870,12 +870,8 @@ void RoctracerDataSource::hcc_activity_callback(const char* begin, const char* e
             sqlite3_int64 name_id = logger.stringTable().getOrCreate(name);
 
             OpTable::row row;
-            if (SmuDumpDataSource::singleton().isLoggingEnabled())
-            {
-                row.gpuId = record->device_id;
-            } else {
-                row.gpuId = mapDeviceId(record->device_id);
-             }
+            
+            row.gpuId = record->device_id;
             
             row.queueId = record->queue_id;
             row.sequenceId = 0;
